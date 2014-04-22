@@ -23,9 +23,22 @@ sigma = 0.3;
 %        mean(double(predictions ~= yval))
 %
 
+steps = [0.01 0.03 0.1 0.3 1 3 10 30];
 
+errors = zeros(length(steps), length(steps));
 
+for i = 1:length(steps)
+    C = steps(i);
+    for k = 1:length(steps)
+        sigma = steps(k);
+        errors(i,k) = mean(double(svmPredict(svmTrain(X,y,C,@(x1,x2) gaussianKernel(x1,x2,sigma)),Xval)~=yval)); 
 
+    end
+end
+
+[row, col] = find(errors == min(errors(:)));
+C = steps(row);
+sigma = steps(col);
 
 
 
